@@ -11,7 +11,7 @@
     "lint": "eslint . --max-warnings 0",
     "ui:add": "pnpm dlx shadcn-ui@latest add",
     "generate-client": "openapi --input https://next-fast-turbo-api.vercel.app/openapi.json --output ./lib/api/client --client axios --useOptions --useUnionTypes",
-    "generate-client:dev": "openapi --input http://127.0.0.0:8000/openapi.json --output ./lib/api/client --client axios --useOptions --useUnionTypes"
+    "generate-client:dev": "openapi --input http://127.0.0.1:8000/openapi.json --output ./lib/api/client --client axios --useOptions --useUnionTypes"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.4",

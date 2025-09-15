@@ -2,8 +2,9 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type Spell = {
-  id: string;
-  name: string;
-  description: string;
+export type Node = {
+    id: string;
+    label: string;
+    kind?: 'goal' | 'subgoal' | 'task' | 'checkpoint';
 };
+

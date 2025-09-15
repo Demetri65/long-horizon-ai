@@ -2,9 +2,9 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type User = {
-  id: string;
-  forename: string;
-  surname: string;
-  email: string;
+export type Edge = {
+    source: string;
+    target: string;
+    relation?: 'decomposes' | 'depends_on';
 };
+

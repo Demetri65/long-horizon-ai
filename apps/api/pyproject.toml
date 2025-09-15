@@ -12,6 +12,7 @@ email-validator = "^2.1.0"
 pydantic-settings = "^2.2.1"
 python-dotenv = "^1.0.1"
 supabase = ">=2.18,<3"
+openai = "^1.107.2"
 
 [tool.poetry.dev-dependencies]
 isort = "^5.10.1"

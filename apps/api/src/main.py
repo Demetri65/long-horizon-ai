@@ -7,7 +7,6 @@ from src.config import settings
 
 info_router = APIRouter()
 
-
 @info_router.get("/", status_code=200, include_in_schema=False)
 async def info():
     return [{"Status": "API Running"}]

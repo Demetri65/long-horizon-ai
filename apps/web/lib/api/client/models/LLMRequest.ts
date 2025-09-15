@@ -2,8 +2,9 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type UserCreate = {
-  forename: string;
-  surname: string;
-  email: string;
+export type LLMRequest = {
+    input: string;
+    style?: (string | null);
+    max_steps?: (number | null);
 };
+

@@ -2,7 +2,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { Spell } from "./Spell";
-export type SpellSearchResults = {
-  results: Array<Spell>;
+import type { StructuredPlan } from './StructuredPlan';
+export type LLMResponse = {
+    plan: StructuredPlan;
 };
+

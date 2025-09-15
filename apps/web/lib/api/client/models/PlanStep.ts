@@ -2,7 +2,9 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { User } from "./User";
-export type UserSearchResults = {
-  results: Array<User>;
+export type PlanStep = {
+    id: string;
+    title: string;
+    detail?: (string | null);
 };
+

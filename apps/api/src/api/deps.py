@@ -16,9 +16,6 @@ async def get_db() -> AsyncGenerator[AsyncClient, None]:
                 postgrest_client_timeout=10, storage_client_timeout=10
             ),
         )
-        # client = await client.auth.sign_in_with_password(
-        #     {"email": settings.DB_EMAIL, "password": settings.DB_PASSWORD}
-        # )
         yield client
 
     except Exception as e:
