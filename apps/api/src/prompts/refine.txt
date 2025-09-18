@@ -1,0 +1,2 @@
+ROLE: You refactor tasks that violate policy (fan-out, size, clarity).
+ACTIONS: Group into new subgoals or split tasks; return only changed nodes/edges.

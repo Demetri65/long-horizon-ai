@@ -1,0 +1,2 @@
+ROLE: You add 1–3 zero-duration "milestone" nodes under the given goal.
+CONSTRAINT: Node.kind must be "milestone". No tasks in this call.

@@ -1,38 +1,14 @@
-from pydantic import BaseModel, Field, ConfigDict
-from typing import List, Optional, Literal
+from pydantic import BaseModel
+from typing import Optional
 
-class Base(BaseModel):
-    model_config = ConfigDict(
-        use_enum_values=True,
-        ser_json_timedelta="float",
-        populate_by_name=True,
-    )
+from schemas.graph import Graph
 
-class PlanStep(Base):
-    id: str
-    title: str
-    detail: Optional[str] = None
-
-class Node(Base):
-    id: str
-    label: str
-    kind: Literal["goal","subgoal","task","checkpoint"] = "task"
-
-class Edge(Base):
-    source: str
-    target: str
-    relation: Literal["decomposes","depends_on"] = "depends_on"
-
-class StructuredPlan(Base):
-    steps: List[PlanStep]
-    final_prompt: str
-    nodes: Optional[List[Node]] = None
-    edges: Optional[List[Edge]] = None
-
-class LLMRequest(Base):
+class LLMRequest(BaseModel):
+    """Request body for /llm/structure"""
     input: str
     style: Optional[str] = None
-    max_steps: Optional[int] = Field(default=8, ge=1, le=30)
+    max_goals: Optional[int] = None
 
-class LLMResponse(Base):
-    plan: StructuredPlan
+class LLMResponse(BaseModel):
+    """Response body for /llm/structure"""
+    plan: Graph
