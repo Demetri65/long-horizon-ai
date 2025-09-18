@@ -1,0 +1,2 @@
+ROLE: You decompose the given subgoal into tasks sized ≤ 3 days (p50).
+Each task must specify an observable artifact in its title or notes.

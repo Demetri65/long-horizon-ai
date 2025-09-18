@@ -6,34 +6,34 @@ import { ArrowUp, Plus } from "lucide-react";
 import { HTMLAttributes } from "react";
 import { Button } from "../ui/button";
 
-export type PlusButtonProps = { 
+export type PlusButtonProps = {
   toggleExpanded: () => void;
 };
 
 export default function PlusButton({ toggleExpanded }: PlusButtonProps) {
   return (
-    <Button 
-      variant="ghost" 
+    <Button
+      variant="ghost"
       size="icon"
-      onClick={toggleExpanded}  
+      onClick={toggleExpanded}
       className="size-[36px] rounded-full"
-  >
-      <Plus size={20}/>
+    >
+      <Plus size={20} />
     </Button>
   )
 }
 
 
-export const SendButton = ( props: HTMLAttributes<HTMLButtonElement> ) => {
+export const SendButton = (props: HTMLAttributes<HTMLButtonElement>) => {
   return (
-    <Button 
-      type="submit" 
-      variant="ghost" 
-      size="icon" 
+    <Button
+      type="submit"
+      variant="ghost"
+      size="icon"
       className="size-[36px] rounded-full"
       {...props}
     >
-      <ArrowUp size={20}/>
+      <ArrowUp size={20} />
     </Button>
   )
 }
@@ -44,7 +44,7 @@ export type InputAreaProps = {
   onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
   textAreaRef?: React.RefObject<HTMLTextAreaElement>;
   rows?: number;
-}
+} & HTMLAttributes<HTMLTextAreaElement>;
 
 export const InputArea = ({ placeholder, value, onChange, textAreaRef, rows }: InputAreaProps) => {
   return (
@@ -52,7 +52,7 @@ export const InputArea = ({ placeholder, value, onChange, textAreaRef, rows }: I
       ref={textAreaRef}
       value={value}
       onChange={onChange}
-      rows={ 1 }
+      rows={1}
       className="border-none bg-transparent resize-none outline-none justify-start flex-grow ml-2"
       placeholder={placeholder}
     />
@@ -60,7 +60,7 @@ export const InputArea = ({ placeholder, value, onChange, textAreaRef, rows }: I
 }
 
 export type ChatInputProps = {
-  onSend: (content: string) => void;
+  onSend: any;
   placeholder?: string;
   children?: React.ReactNode;
 }
@@ -74,7 +74,6 @@ export function ChatInput({
   const [expanded, setExpanded] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
-  // Helper to reset the textarea height to fit contents
   const resizeTextarea = () => {
     const el = textareaRef.current;
     if (!el) return;
@@ -82,13 +81,11 @@ export function ChatInput({
     el.style.height = `${el.scrollHeight}px`;
   };
 
-  // Update the input value and resize the textarea on each change
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setValue(e.target.value);
     resizeTextarea();
   };
 
-  // Handle submission either via form submit or explicit button click
   const handleSubmit = (e?: FormEvent) => {
     if (e) e.preventDefault();
     const trimmed = value.trim();
@@ -103,7 +100,6 @@ export function ChatInput({
 
   const toggleExpanded = () => {
     setExpanded((prev) => !prev);
-    // Focus the textarea when expanding
     setTimeout(() => {
       textareaRef.current?.focus();
     }, 0);
@@ -118,6 +114,12 @@ export function ChatInput({
         value={value}
         onChange={handleChange}
         rows={expanded ? 3 : 1}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault();
+            handleSubmit();
+          }
+        }}
       />
       <SendButton onClick={handleSubmit} />
     </div>

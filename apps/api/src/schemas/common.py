@@ -1,32 +1,14 @@
-from enum import Enum
-from typing import Literal
-from pydantic import BaseModel, ConfigDict, Field
+from datetime import datetime
+from typing import Annotated
+from pydantic import Field, constr
+from src.config import ModelBase
 
-class Base(BaseModel):
-    model_config = ConfigDict(
-        ser_json_timedelta="float", 
-        use_enum_values=True,
-        populate_by_name=True,
-    )
+NodeId = Annotated[str, Field(pattern=r"^[A-Za-z0-9_\-:.]{1,64}$")]
+EdgeId = Annotated[str, Field(pattern=r"^[A-Za-z0-9_\-:.]{1,64}$")]
+MetricId = Annotated[str, Field(min_length=1, max_length=64)]
 
-class GoalStatus(str, Enum):
-    draft = "draft"; 
-    active = "active"; 
-    paused = "paused"; 
-    done = "done"; 
-    failed = "failed"
+ISODateTime = datetime
 
-class TaskStatus(str, Enum):
-    waiting="waiting"; 
-    ready="ready"; 
-    running="running"; 
-    blocked="blocked"; 
-    paused="paused"; 
-    done="done"; 
-    failed="failed"
-
-class Metric(Base):
-    name: str
-    unit: Literal["count","percent","score","duration","currency","custom"]
-    target: float
-    direction: Literal["at_least","at_most","equal"] = "at_least"
+class WithTimestamps(ModelBase):
+    created_at: ISODateTime | None = None
+    updated_at: ISODateTime | None = None

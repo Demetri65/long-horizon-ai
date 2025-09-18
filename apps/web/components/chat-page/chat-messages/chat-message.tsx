@@ -1,19 +1,23 @@
+'use client';
+import * as React from 'react';
+import { UIMessage } from 'ai';
 
-export interface ChatMessage {
-  id: string;
-  role: "user" | "assistant";
-  content: string;
-}
+type Props = { message: UIMessage };
 
-export const ChatMessage = ({ id, role, content }: ChatMessage) => {
+export const ChatMessage: React.FC<Props> = ({ message }) => {
+  const text = message.parts
+    .filter((p) => p.type === 'text')
+    .map((p: any) => p.text)
+    .join('');
+
   return (
-    <div key={id} className={`flex ${role === "user" ? "justify-end" : "justify-start"}`}>
+    <div key={message.id} className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}>
       <div
-        className={`p-2 rounded-md text-base whitespace-pre-line leading-normal ${role === "user" ? "bg-zinc-800 text-slate-100 max-w-s rounded-full" : " text-gray-100 bg-transparent "
+        className={`p-2 rounded-md text-base whitespace-pre-line leading-normal ${message.role === "user" ? "bg-zinc-800 text-slate-100 max-w-s rounded-full" : " text-gray-100 bg-transparent "
           }`}
       >
-        {content}
+        {text}
       </div>
     </div>
-  )
-}
+  );
+};
