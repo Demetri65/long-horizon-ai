@@ -41,13 +41,11 @@ export default function ChatPage(project: any) {
         return {
           api,
           headers: { 'Content-Type': 'application/json' },
-          body: { graphId: graphIdRef.current, maxGoals: 3, prompt: text },
+          body: { graphId: graphIdRef.current, maxGoals: 5, prompt: text },
         };
       },
     }),
   });
-
-  console.log('Messages:', messages);
 
   const ensureGraph = async () => {
     if (graphIdRef.current) return graphIdRef.current;
@@ -62,31 +60,28 @@ export default function ChatPage(project: any) {
     const gid = await ensureGraph();
     sendMessage(
       { role: 'user', parts: [{ type: 'text', text }] },
-      { body: { graphId: gid, maxGoals: 3 } }
+      { body: { graphId: gid, maxGoals: 5 } }
     ).catch((error) => console.error('Error sending message:', error));
   };
 
 
 
-  const temp = messages.at(-1);
-  const fullText = (temp?.parts ?? [])
+  const message = messages.at(-1);
+  const fullText = (message?.parts ?? [])
     .filter((part: any) => part.type === 'text')
     .map((part: any) => part.text)
-    .join(' '); // Join the array into a single string.
+    .join(' ');
 
-  // Use the custom hook with the full text and a typing speed (e.g., 50ms).
   const { displayedText, nodes } = useNodeStream(fullText);
-  console.log('Nodes:', nodes);
-
-  console.log(displayedText)
 
   return (
     <div className="flex flex-col w-full place-items-center pb-0 bg-zinc-800">
-      <GraphSection graph={graph} messages={messages} />
+      <GraphSection graph={nodes} messages={messages} streamStatus={status} />
       <ChatMessages
         nodes={nodes}
         expanded={expanded}
         onToggleExpand={() => setExpanded((prev) => !prev)}
+        messages={messages}
       />
       <ChatInput onSend={handleSend} />
     </div>

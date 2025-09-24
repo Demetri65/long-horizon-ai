@@ -113,6 +113,9 @@ importers:
       hamburger-react:
         specifier: ^2.5.0
         version: 2.5.2(react@18.3.1)
+      incomplete-json-parser:
+        specifier: ^1.1.4
+        version: 1.1.4
       jsonparse:
         specifier: ^1.3.1
         version: 1.3.1
@@ -3458,6 +3461,9 @@ packages:
   imurmurhash@0.1.4:
     resolution: {integrity: sha512-JmXMZ6wuvDmLiHEml9ykzqO6lwFbof0GG4IkcGaENdCRDDmMVnny7s5HsIgHCbaq0w2MyPhDqkhTUgS2LU2PHA==}
     engines: {node: '>=0.8.19'}
+
+  incomplete-json-parser@1.1.4:
+    resolution: {integrity: sha512-CiE1lQCt7fAwFbScnCRmScNYST97f9/hIvoU+0iIQQjoezOEepBj6qHsMMb0kW3yfeme9psM/83lrrADoguI1w==}
 
   indent-string@4.0.0:
     resolution: {integrity: sha512-EdDDZu4A2OyIK7Lr/2zG+w5jmbuk1DVBnEwREQvBzspBJkCEbRa8GxU1lghYcaGJCnRWibjDXlq779X1/y5xwg==}
@@ -10338,6 +10344,8 @@ snapshots:
       resolve-from: 4.0.0
 
   imurmurhash@0.1.4: {}
+
+  incomplete-json-parser@1.1.4: {}
 
   indent-string@4.0.0: {}
 

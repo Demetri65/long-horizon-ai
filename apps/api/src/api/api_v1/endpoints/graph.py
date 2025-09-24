@@ -172,7 +172,8 @@ async def decompose_stream(graph_id: str, body: DecomposeGoalsBody, request: Req
             "- Order nodes chronologically (earliest first).\n"
             "- Do NOT include milestones or tasks yet.\n"
             "- If uncertain about dates, still order by logical sequence.\n"
-            "- Output JSON with one top-level key: 'nodes'. 'edges' MUST be omitted or empty.\n"
+            "- Output JSON with one top-level key: 'nodes'. \n"
+            "- 'edges' within 'nodes' MUST not be omitted or empty and must connect nodes correctly.\n"
         )
 
         async def gen():

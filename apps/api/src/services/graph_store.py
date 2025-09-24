@@ -10,3 +10,6 @@ class GraphStore:
     def save(self, graph: Graph): self._by_id[graph.graph_id] = graph
     def load(self, graph_id: str) -> Graph: return self._by_id[graph_id]
     def exists(self, graph_id: str) -> bool: return graph_id in self._by_id
+
+
+    

@@ -7,14 +7,16 @@ export type RawNode = {
   parent?: string | null;
   kind?: string;
   smarter?: unknown;
+  // ✅ add edges so the shape matches your domain
+  edges?: Array<{ edgeId: string; fromNode: string; toNode: string; label?: string }>;
 };
 
 /**
  * Incrementally "types" `fullText` and builds node objects as complete key/value pairs appear.
  *
- * - Preserves nested shape (e.g., smarter.specific, smarter.timeBound).
+ * - Preserves nested shape (objects + arrays).
  * - Associates each parsed field with the nearest preceding top-level `"nodeId": "..."`.
- * - Avoids duplicates: primitives inside objects are skipped; nested objects aren’t promoted to root.
+ * - Avoids duplicates: primitives inside objects/arrays are skipped; nested structures aren’t promoted to root.
  *
  * @param fullText Streaming JSON-like text (grows over time).
  * @param speed    Typewriter delay per character (ms).
@@ -26,8 +28,6 @@ export const useNodeStream = (fullText: string, speed = 15) => {
   const [id, setId] = useState<string | null>(null);
   const toArr = (m: Record<string, any>): RawNode[] =>
     Object.entries(m).map(([nid, v]) => ({ nodeId: nid, ...v }));
-
-  const balanced = (s: string) => { let c = 0; for (const ch of s) { if (ch === "{") c++; else if (ch === "}") c--; if (c < 0) return false; } return c === 0; };
 
   // Typewriter
   useEffect(() => {
@@ -53,9 +53,10 @@ export const useNodeStream = (fullText: string, speed = 15) => {
       return cur;
     };
 
-    // 2) Objects: balanced scan + span tracking
-    const objSpans: Array<[number, number]> = [];
-    const rObjStart = /"([^"]+)"\s*:\s*\{/g;
+    // We track spans for *both* objects and arrays so that rPrim ignores anything inside.
+    const spans: Array<[number, number]> = [];
+
+    // Helpers to find the end of a JSON object or array starting at a given index.
     const findObjEnd = (s: string, from: number) => {
       let depth = 0, inStr = false, esc = false;
       for (let j = from; j < s.length; j++) {
@@ -67,22 +68,35 @@ export const useNodeStream = (fullText: string, speed = 15) => {
       }
       return -1;
     };
+    const findArrEnd = (s: string, from: number) => {
+      let depth = 0, inStr = false, esc = false;
+      for (let j = from; j < s.length; j++) {
+        const ch = s[j];
+        if (inStr) { if (esc) esc = false; else if (ch === "\\") esc = true; else if (ch === '"') inStr = false; continue; }
+        if (ch === '"') { inStr = true; continue; }
+        if (ch === "[") { depth++; continue; }
+        if (ch === "]") { depth--; if (depth === 0) return j + 1; }
+      }
+      return -1;
+    };
 
+    // 2a) OBJECTS: `"key": { ... }`
+    const rObjStart = /"([^"]+)"\s*:\s*\{/g;
     let m: RegExpExecArray | null;
     while ((m = rObjStart.exec(displayedText))) {
       const key = m[1];
       const spanStart = (m as any).index as number;
-      const braceStart = spanStart + m[0].length - 1;
+      const braceStart = spanStart + m[0].length - 1; // points to '{'
       const end = findObjEnd(displayedText, braceStart);
       const owner = idAt(spanStart);
       if (!owner) continue;
 
-      // MINIMAL: if this object starts inside any earlier object span, skip promoting it to root.
-      if (objSpans.some(([s, e]) => spanStart > s && spanStart < e)) continue;
+      // If this object starts inside any earlier span (object or array), skip promoting it.
+      if (spans.some(([s, e]) => spanStart > s && spanStart < e)) continue;
 
-      if (end === -1) { objSpans.push([spanStart, displayedText.length + 1]); continue; }
+      if (end === -1) { spans.push([spanStart, displayedText.length + 1]); continue; }
 
-      objSpans.push([spanStart, end]);
+      spans.push([spanStart, end]);
       try {
         const v = JSON.parse(displayedText.slice(braceStart, end));
         // On close, remove any root-level duplicates that belong under this object key.
@@ -95,11 +109,44 @@ export const useNodeStream = (fullText: string, speed = 15) => {
       } catch { /* ignore until fully valid */ }
     }
 
-    // 3) Primitives outside any object span only
+    // 2b) ARRAYS: `"key": [ ... ]`  ✅ NEW: handles edges and any other arrays
+    const rArrStart = /"([^"]+)"\s*:\s*\[/g;
+    while ((m = rArrStart.exec(displayedText))) {
+      const key = m[1];
+      const spanStart = (m as any).index as number;
+      const bracketStart = spanStart + m[0].length - 1; // points to '['
+      const end = findArrEnd(displayedText, bracketStart);
+      const owner = idAt(spanStart);
+      if (!owner) continue;
+
+      // If this array starts inside any earlier span, skip promoting it.
+      if (spans.some(([s, e]) => spanStart > s && spanStart < e)) continue;
+
+      if (end === -1) { spans.push([spanStart, displayedText.length + 1]); continue; }
+
+      spans.push([spanStart, end]);
+      try {
+        const v = JSON.parse(displayedText.slice(bracketStart, end));
+        // Minimal policy: replace the whole array when it closes (correct for streaming).
+        setNodesMap(prev => {
+          const cur = prev[owner] || {};
+          const next = { ...cur, [key]: Array.isArray(v) ? v : [] };
+          // Optional tiny cleanup for previously flattened edge fields:
+          if (key === "edges") {
+            delete (next as any).edgeId;
+            delete (next as any).fromNode;
+            delete (next as any).toNode;
+          }
+          return { ...prev, [owner]: next };
+        });
+      } catch { /* ignore until fully valid */ }
+    }
+
+    // 3) PRIMITIVES outside any object/array span only
     const rPrim = /"([^"]+)"\s*:\s*("(?:[^"\\]|\\.)*"|\d+(?:\.\d+)?|true|false|null)/g;
     while ((m = rPrim.exec(displayedText))) {
       const start = (m as any).index as number;
-      if (objSpans.some(([s, e]) => start >= s && start < e)) continue; // skip inside objects (open/closed)
+      if (spans.some(([s, e]) => start >= s && start < e)) continue; // ✅ ignore inside objects/arrays
       const k = m[1]; if (k === "nodeId") continue;
       const owner = idAt(start); if (!owner) continue;
 

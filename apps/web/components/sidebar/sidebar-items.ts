@@ -33,25 +33,6 @@ export const SIDEBAR_ITEMS_DATA = [
       ]
     },
     {
-      title: "Models",
-      url: "#",
-      icon: Bot,
-      items: [
-        {
-          title: "Genesis",
-          url: "#",
-        },
-        {
-          title: "Explorer",
-          url: "#",
-        },
-        {
-          title: "Quantum",
-          url: "#",
-        },
-      ]
-    },
-    {
       title: "Documentation",
       url: "#",
       icon: BookOpen,
