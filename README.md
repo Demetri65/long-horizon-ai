@@ -61,7 +61,9 @@ People struggle to turn long‑term intentions into consistent progress. Classic
 * **Representations:** HTA‑derived **DAG** with node‑level SMARTER fields; visible **graph view** for progress and re‑planning.
 * **UX moments:** create goal → inspect/edit DAG → run periodic **Evaluate/Readjust** → mark completions (non‑agentic) or approve drafts (hybrid) → compare deltas between plan versions.
 
-> **Status:** Early research prototype; **non‑agentic** flow ships first. A short demo video exists and is here &#8595;
+> **Status:** Early research prototype; **non‑agentic** flow ships first. A short demo video here &#8595;
+
+https://github.com/user-attachments/assets/adcd7862-9378-4e6a-9617-94ee010b4e48
 
 ---
 
