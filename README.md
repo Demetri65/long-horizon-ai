@@ -44,7 +44,7 @@ People struggle to turn long‑term intentions into consistent progress. Classic
 
 ---
 
-## Example long‑horizon scenarios (used in demos & studies)
+## Example long‑horizon scenarios
 
 1. **Finish a Linear Algebra online course**
    * Decompose into weekly modules, problem‑set cadence, spaced review, and milestone quizzes; track SMARTER metrics like “hours/week” and “quiz pass rate.”
