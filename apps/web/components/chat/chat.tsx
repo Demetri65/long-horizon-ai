@@ -1,16 +1,14 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
-import { GraphSection } from './graph-section/graph-section';
-import { ChatMessages } from './chat-messages/chat-messages';
-import { ChatInput } from './chat-input';
+import { useRef, useState } from 'react';
+import { Messages } from '../chat/messages/messages';
+import { Input } from '../chat/input/input';
 import { Graph, GraphService } from '@/lib/api/client';
 
 import { DefaultChatTransport } from 'ai';
-import { useChat } from '@ai-sdk/react'; // Streams parts with text-delta/text-end under the hood. :contentReference[oaicite:2]{index=2}
-import { GoalStreamStore } from '@/lib/streaming/goal-stream-store';
+import { useChat } from '@ai-sdk/react';
 import { useNodeStream } from '@/hooks/use-node-stream';
-import { IncompleteJsonParser } from 'incomplete-json-parser';
+import { GraphSection } from '../chat/graph/graph';
 
 export type RawNode = {
   nodeId: string;
@@ -22,9 +20,8 @@ export type RawNode = {
 };
 
 
-export default function ChatPage(project: any) {
+export const Chat = (project: any) => {
   const [graph, setGraph] = useState<Graph | null>(null);
-  const [expanded, setExpanded] = useState(false);
   const graphIdRef = useRef<string | null>(null);
 
 
@@ -77,13 +74,8 @@ export default function ChatPage(project: any) {
   return (
     <div className="flex flex-col w-full place-items-center pb-0 bg-zinc-800">
       <GraphSection graph={nodes} messages={messages} streamStatus={status} />
-      <ChatMessages
-        nodes={nodes}
-        expanded={expanded}
-        onToggleExpand={() => setExpanded((prev) => !prev)}
-        messages={messages}
-      />
-      <ChatInput onSend={handleSend} />
+      <Messages messages={messages} />
+      <Input onSend={handleSend} />
     </div>
   );
 }

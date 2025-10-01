@@ -95,17 +95,12 @@ type AssignmentEvent = { path: Array<string | number>; value: unknown };
 type NodeKeyEvent = { nodeId: string; key: string; subpath?: Array<string | number>; value: unknown };
 
 export class GoalStreamStore {
-    // existing fields...
     private byId = new Map<string, GoalNodeVars>();
     private idxToId = new Map<number, string>();
     private pending = new Map<number, Array<{ key: string; value: unknown; subpath?: Array<string | number> }>>();
     private parser!: JSONParser;
     private parserOpts: JSONParserOptions;
-
-    // NEW: reactive list of nodeIds
     private nodeIdsVar: Var<string[]> = createVar<string[]>([]);
-
-    // NEW: debug subscribers
     private assignmentListeners = new Set<(e: AssignmentEvent) => void>();
     private nodeKeyListeners = new Set<(e: NodeKeyEvent) => void>();
 

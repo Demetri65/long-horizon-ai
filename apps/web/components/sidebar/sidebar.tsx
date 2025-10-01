@@ -12,8 +12,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarHead />
       <SidebarContent className="text-base">
         <SidebarSection label="Main" items={SIDEBAR_ITEMS_DATA} />
-        {/* <NavProjects projects={SIDEBAR_ITEMS_DATA.projects} /> */}
-        {/* <NavSecondary items={SIDEBAR_ITEMS_DATA.navSecondary} className="mt-auto" /> */}
       </SidebarContent>
       <SidebarFoot />
     </Sidebar>

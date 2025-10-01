@@ -4,7 +4,7 @@ import { UIMessage } from 'ai';
 
 type Props = { message: UIMessage };
 
-export const ChatMessage: React.FC<Props> = ({ message }) => {
+export const Message: React.FC<Props> = ({ message }) => {
   const text = message.parts
     .filter((p) => p.type === 'text')
     .map((p: any) => p.text)
